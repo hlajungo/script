@@ -12,11 +12,12 @@ readonly ACTIVE_MODULES="${LOADEDMODULES:-}"
 SCRIPT_HASH=$( (cat "$ORIGINAL_SCRIPT_PATH"; echo "$ACTIVE_MODULES") | sha256sum | awk '{print $1}' )
 
 # 4. 啟動日誌攔截
-exec > >(tee -a "${ORIGINAL_SCRIPT_DIR}/${SCRIPT_HASH}.log.$(date +%Y%m%d_%H%M%S)") 2>&1
+readonly LOG_FILE="${ORIGINAL_SCRIPT_DIR}/${SCRIPT_HASH}.log.$(date +%Y%m%d_%H%M%S)"
+exec > >(tee -a "$LOG_FILE") 2>&1
 
 readonly MFC_VERSION="v5.7.0"
 readonly MFC_REPO="https://github.com/MFlowCode/MFC.git"
-readonly BUILD_CORES="16"
+readonly BUILD_CORES="8"
 
 echo "[INFO] Required dependencies: gcc, mpi (mpifort)"
 if ! command -v mpifort &> /dev/null || ! command -v gcc &> /dev/null; then
@@ -80,8 +81,10 @@ set_alias("mfc", "cd " .. mfc_root .. " && ./mfc.sh")
 EOF
 
 echo "[INFO] Deployment completed."
-echo "[INFO] Archiving deployment script into software directory."
-cp "$ORIGINAL_SCRIPT_PATH" "${SOFTWARE_DIR}/build_deploy_${SCRIPT_HASH}.sh"
+echo "[INFO] Archiving script and execution log into data workspace..."
+cp "$ORIGINAL_SCRIPT_PATH" "${SOFTWARE_DIR}/script_${SCRIPT_HASH}.sh"
+cp "$LOG_FILE" "${SOFTWARE_DIR}/"
+
 echo "[INFO] Software path: $SOFTWARE_DIR"
 echo "[INFO] Module path: $MODULE_FILE"
 
