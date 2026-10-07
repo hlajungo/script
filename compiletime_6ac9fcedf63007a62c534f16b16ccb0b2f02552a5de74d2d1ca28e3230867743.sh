@@ -45,4 +45,4 @@ printf "%s_runtime: %02dhr:%02dmin:%02dsec\n" "${0##*/}" $((SECONDS/3600)) $(( (
 cp "$ORIGINAL_SCRIPT_PATH" "${SOFTWARE_DIR}/compiletime_${SCRIPT_HASH}.sh"; cp "$LOG_FILE" "${SOFTWARE_DIR}/compiletime_${SCRIPT_HASH}.log"; rm -f "$LOG_FILE"
 [[ -f "$RES_SCRIPT" ]] && cp "$RES_SCRIPT" "${SOFTWARE_DIR}/compileresource_${RES_HASH}.sbatch"
 [[ -f "$RES_LOG" ]] && cp "$RES_LOG" "${SOFTWARE_DIR}/compileresource_${RES_HASH}.log"
-echo "[INFO] Artifacts safely pooled."
+echo "[INFO] Exit successfully."
